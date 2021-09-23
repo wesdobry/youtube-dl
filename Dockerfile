@@ -45,7 +45,11 @@ RUN set -x && \
         chmod -R a+x $(find /tmp/ffmpeg*/bin/ -type d) && \
         mv $(find /tmp/ffmpeg*/bin/ -type d)/* /usr/bin/ && \
         rm -rf /tmp/* ; \
+<<<<<<< HEAD
     elif [ "$ARCH" = "aarch64" ]; then \
+=======
+    else \
+>>>>>>> 35895b250358a0004950095d0b4ab6a101301763
         apt update && \
         apt install -y \
             ffmpeg && \
@@ -53,11 +57,16 @@ RUN set -x && \
         rm -rf \
             /var/lib/apt/lists/* \
             -rf /tmp/* ; \
+<<<<<<< HEAD
     else \
         echo "unknown arch: ${ARCH}" && \
         exit 1 ; \
     fi
     
+=======
+    fi
+
+>>>>>>> 35895b250358a0004950095d0b4ab6a101301763
 RUN set -ex && \
     ARCH=`uname -m` && \
     if [ "$ARCH" = "x86_64" ]; then \
