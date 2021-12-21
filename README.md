@@ -9,24 +9,6 @@
 Docker hub page [here](https://hub.docker.com/r/jeeaaasustest/youtube-dl).  
 yt-dlp documentation [here](https://github.com/yt-dlp/yt-dlp).
 
-## Recent Changes
-
-### ***2021-09-05 - "The king is dead, long live the king!"***
-Image tags `latest`, `v2021.09.02` and future `v<VERSION>` now contains [yt-dlp](https://github.com/yt-dlp/yt-dlp).  
-`v2021.06.06` is the last image to contain [youtube-dl](https://github.com/ytdl-org/youtube-dl).
-
-There are many new and changed default arguments, if you have modified your `args.conf` you might want to take a look at the new [default args](https://github.com/Jeeaaasus/youtube-dl/blob/master/root/config.default/args.conf). If you have not modified your `args.conf` it should update to the new one.  
-
-With yt-dlp comes many improvments, such as, bypass age gate in most cases, better video format selection, [SponsorBlock API](https://sponsor.ajay.app/) support to generate chapters when there are sponsored segments, <s>although cutting out segments are not yet supported</s> ***(fixed)***.  
-Other new stuff include, arm64 image, new ENVs: `youtubedl_lockfile`, to help with external scripts. `youtubedl_cookies`, an easy way to pass cookies without the need to modify your `args.conf`. `youtubedl_watchlater`, an easy way to download your Watch Later playlist.
-#
-
-### ***2021-08-22***
-Because [youtube-dl](https://github.com/ytdl-org/youtube-dl) seems to have seized development, this image will soon be changing over to use [yt-dlp](https://github.com/yt-dlp/yt-dlp) instead.
-Because of this change some current setups might not work the same, the major differences are listed [here](https://github.com/yt-dlp/yt-dlp#differences-in-default-behavior).
-
-Hopefully this wont affect most users but if you are someone with a heavily customized configuration I ask you to try out the beta image (`jeeaaasustest/youtube-dl:yt-dlp-beta`) containing [yt-dlp](https://github.com/yt-dlp/yt-dlp) and let me know about any issues or questions [here](https://github.com/Jeeaaasus/youtube-dl/issues/49).
-
 # Features
 * **Easy Usage with Minimal Setup**
     * Quality options with env parameter
@@ -91,11 +73,14 @@ Then configure the channels as explained in the [Configure youtube-dl](https://g
 | `youtubedl_quality` | `720` (`1080`) `1440` `2160` | If you want to change the default download resolution.<br>720p, (1080p), 1440p, 4k.
 
 # Image Tags
+* **`unstable`**
+    * Automatically built when a new GitHub commit is pushed.
+    * Container updates to the newest yt-dlp commit while running.
 * **`latest`**
-    * Automatically built when a yt-dlp version is released.
-    * Container updates to latest yt-dlp while running.
+    * Automatically built when a new version of yt-dlp is released.
+    * Container updates to the latest version of yt-dlp while running.
 * **`v<VERSION>`**
-    * Automatically built when a yt-dlp version is released.
+    * Automatically built when a new version of yt-dlp is released.
     * Does not update.
 
 # Configure youtube-dl
