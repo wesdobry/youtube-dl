@@ -2,6 +2,7 @@ import subprocess, aiofiles, re
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import RedirectResponse, FileResponse
 from fastapi.templating import Jinja2Templates
+from pathlib import Path
 
 
 def execute(command):
@@ -16,6 +17,21 @@ def execute(command):
         return output
     else:
         raise Exception(command, exit_code, output)
+
+
+def get_archive():
+    """Ensure that the archive file exists and return its path.
+
+    This is a function so the path can be made configurable in the future.
+
+    Returns:
+        :obj:`str`: The full local path to the archive file.
+    """
+    filename = '/config/archive.txt'
+    archfile = Path(filename)
+    if not archfile.exists():
+        archfile.touch()
+    return filename
 
 
 templates = Jinja2Templates(directory='/app/webserver/templates')
@@ -36,7 +52,7 @@ async def download_url(url: str = Form(...)):
                 youtubedl_args_format = ''
             else:
                 youtubedl_args_format = youtubedl_default_args_format
-        execute(f'{youtubedl_binary} \'{url}\' --config-location \'/config/args.conf\' {youtubedl_args_format}')
+        execute(f'{youtubedl_binary} \'{url}\' --no-playlist-reverse --playlist-end \'-1\' --config-location \'/config/args.conf\' {youtubedl_args_format}')
     return RedirectResponse(url='/', status_code=303)
 
 
@@ -77,7 +93,7 @@ async def save_channels(channels_new: list = Form(...)):
 @webserver.get('/edit/archive')
 async def edit_archive(request: Request):
     archive = ''
-    async with aiofiles.open('/config/archive.txt') as f:
+    async with aiofiles.open(get_archive()) as f:
         async for line in f:
             archive = archive + line
     return templates.TemplateResponse('archive.html', {'request': request, 'archive': archive})
