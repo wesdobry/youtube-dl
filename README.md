@@ -1,5 +1,6 @@
 # Jeeaaasus - youtube-dl
-[![Docker Automated build](https://img.shields.io/docker/cloud/automated/jeeaaasustest/youtube-dl?style=flat&logo=docker&label=build)](https://github.com/Jeeaaasus/youtube-dl/actions/workflows/push-release-version-image.yml/)
+[![GitHub last commit](https://img.shields.io/github/last-commit/jeeaaasus/youtube-dl?logo=github)](https://github.com/Jeeaaasus/youtube-dl/actions/workflows/push-unstable-image.yml/)
+[![GitHub Automated build](https://img.shields.io/github/actions/workflow/status/jeeaaasus/youtube-dl/push-release-version-image.yml?logo=github)](https://github.com/Jeeaaasus/youtube-dl/actions/workflows/push-release-version-image.yml/)
 [![Image Size](https://img.shields.io/docker/image-size/jeeaaasustest/youtube-dl/latest?style=flat&logo=docker)](https://hub.docker.com/r/jeeaaasustest/youtube-dl/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/jeeaaasustest/youtube-dl?style=flat&logo=docker)](https://hub.docker.com/r/jeeaaasustest/youtube-dl/)
 [![Docker Stars](https://img.shields.io/docker/stars/jeeaaasustest/youtube-dl?style=flat&logo=docker)](https://hub.docker.com/r/jeeaaasustest/youtube-dl/)
@@ -42,7 +43,6 @@ docker run -d \
     --name youtube-dl \
     -v youtube-dl_data:/config \
     -v <PATH>:/downloads \
-    -e youtubedl_cookies=true \
     -e youtubedl_subscriptions=true \
     -e youtubedl_watchlater=true \
     -e youtubedl_quality=2160 \
@@ -84,10 +84,9 @@ Then configure the channels as explained in the [Configure youtube-dl](https://g
 | `youtubedl_lockfile` | `true` (`false`) | Used to enable youtubedl-running, youtubedl-completed files in downloads directory. Useful for external scripts.
 | `youtubedl_webui` | `true` (`false`) | If you would like to beta test the unfinished web-ui feature, might be broken!
 | `youtubedl_webuiport` | (`8080`) | If you need to change the web-ui port.
-| `youtubedl_cookies` | `true` (`false`) | Used to pass cookies for authentication.
 | `youtubedl_subscriptions` | `true` (`false`) | If you want to download all your subscriptions. Authentication is required.
 | `youtubedl_watchlater` | `true` (`false`) | If you want to download your Watch Later playlist. Authentication is required.
-| `youtubedl_interval` | `1h` (`3h`) `12h` `3d` | If you want to change the default download interval.<br>1 hour, (3 hours), 12 hours, 3 days.
+| `youtubedl_interval` | `1h` (`3h`) `12h` `3d` `false` | If you want to change the default download interval.<br>This can be any value compatible with [gnu sleep](https://github.com/tldr-pages/tldr/blob/main/pages/linux/sleep.md) or if set to false, the container will shutoff after executing. A low interval value risks you being ip-banned by YouTube.<br>1 hour, (3 hours), 12 hours, 3 days, false.
 | `youtubedl_quality` | `720` (`1080`) `1440` `2160` | If you want to change the default download resolution.<br>720p, (1080p), 1440p, 4k.
 
 # Image Tags
@@ -108,7 +107,7 @@ Then configure the channels as explained in the [Configure youtube-dl](https://g
 
     In order to pass your cookies to youtube-dl, you first need a browser extension to extract your cookies, for example, [Get cookies.txt](https://chrome.google.com/webstore/detail/get-cookiestxt/bgaddhkoddajcdgocldbbfleckgcbcid/) (Chrome) or [cookies.txt](https://addons.mozilla.org/en-US/firefox/addon/cookies-txt/) (Firefox).  
     Once you've extracted your cookies, place the `cookies.txt` file inside your Docker volume named `youtube-dl_data` or the folder `/config/` inside your container. One way of doing this would be using the command: `docker cp ./cookies.txt youtube-dl:/config/`.  
-    Then use `-e youtubedl_cookies=true` in your Docker run command when creating your container.
+    Then youtube-dl will find and use the `cookies.txt` file automatically.
 
 * **channels.txt**
 
@@ -143,6 +142,16 @@ Then configure the channels as explained in the [Configure youtube-dl](https://g
 
     It is recommended to use the UCID-based URLs, they look like: `/channel/UC0vaVaSyV14uvJ4hEZDOl0Q`, as the other ones might get changed.
     You find the UCID-based URL by going to a video and clicking on the uploader.
+
+* **pre-execution.sh**
+
+    File location: `/config/pre-execution.sh`.  
+    This is an optional user defined script that is executed before youtube-dl starts downloading videos.
+
+* **post-execution.sh**
+
+    File location: `/config/post-execution.sh`.  
+    This is an optional user defined script that is executed after youtube-dl has finished its full execution.
 
 * **archive.txt**
 
